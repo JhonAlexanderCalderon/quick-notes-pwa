@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Plus, Trash2, LogOut } from 'lucide-react'
-import { signOut } from 'firebase/auth'
-import { auth } from '../firebase/config'
+import { Plus, Trash2, Settings } from 'lucide-react'
 import { watchNotesData, saveNotesData, emptyNotesData } from '../firebase/notes'
 import { CATEGORIES } from '../utils/categories'
 import { Card } from '../components/ui/Card'
@@ -13,7 +11,7 @@ function genId() {
   return 'n' + Date.now() + Math.floor(Math.random() * 1000)
 }
 
-export function NotesPage() {
+export function NotesPage({ onOpenSettings }) {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState(emptyNotesData())
   const [activeCategory, setActiveCategory] = useState(CATEGORIES[0].id)
@@ -66,11 +64,11 @@ export function NotesPage() {
           <p className="text-gray-400 text-sm mt-1">Se sincroniza con el reloj</p>
         </div>
         <button
-          onClick={() => signOut(auth)}
+          onClick={onOpenSettings}
           className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 text-gray-500"
-          aria-label="Cerrar sesion"
+          aria-label="Ajustes"
         >
-          <LogOut size={16} />
+          <Settings size={16} />
         </button>
       </div>
 

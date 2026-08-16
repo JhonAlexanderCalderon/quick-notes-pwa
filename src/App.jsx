@@ -4,9 +4,11 @@ import { auth } from './firebase/config'
 import { Spinner } from './components/ui/Spinner'
 import { AuthPage } from './pages/AuthPage'
 import { NotesPage } from './pages/NotesPage'
+import { SettingsPage } from './pages/SettingsPage'
 
 export default function App() {
   const [user, setUser] = useState(undefined) // undefined = loading
+  const [screen, setScreen] = useState('notes')
 
   useEffect(() => onAuthStateChanged(auth, setUser), [])
 
@@ -18,5 +20,11 @@ export default function App() {
     )
   }
 
-  return user ? <NotesPage /> : <AuthPage />
+  if (!user) return <AuthPage />
+
+  return screen === 'settings' ? (
+    <SettingsPage onBack={() => setScreen('notes')} />
+  ) : (
+    <NotesPage onOpenSettings={() => setScreen('settings')} />
+  )
 }
