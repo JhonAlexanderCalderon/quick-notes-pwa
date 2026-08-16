@@ -53,7 +53,10 @@ export function NotesPage({ onOpenSettings }) {
     saveNotesData(nextData)
   }
 
-  const notes = data[activeCategory] ?? []
+  // Newest first. `id` embeds its creation timestamp (see genId — same
+  // format on the watch side), so a plain descending string sort already
+  // gives correct chronological order without a separate date field.
+  const notes = [...(data[activeCategory] ?? [])].sort((a, b) => (a.id < b.id ? 1 : -1))
   const activeCat = CATEGORIES.find((c) => c.id === activeCategory)
 
   return (
