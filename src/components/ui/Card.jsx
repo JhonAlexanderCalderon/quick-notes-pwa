@@ -1,6 +1,6 @@
-export function Card({ children, className = '' }) {
+export function Card({ children, className = '', style }) {
   return (
-    <div className={`bg-white rounded-3xl shadow-sm border border-gray-100 ${className}`}>
+    <div style={style} className={`bg-white rounded-3xl shadow-sm border border-gray-100 ${className}`}>
       {children}
     </div>
   )

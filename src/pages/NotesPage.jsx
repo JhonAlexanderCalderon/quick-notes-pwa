@@ -47,7 +47,8 @@ export function NotesPage() {
     setNotesLocal((data[activeCategory] ?? []).map((n) => (n.id === id ? { ...n, [field]: value } : n)))
   }
 
-  function deleteNote(id) {
+  function deleteNote(id, title) {
+    if (!confirm(`Borrar "${title || 'esta nota'}"? Esto no se puede deshacer.`)) return
     const next = (data[activeCategory] ?? []).filter((n) => n.id !== id)
     const nextData = { ...data, [activeCategory]: next }
     setData(nextData)
@@ -55,6 +56,7 @@ export function NotesPage() {
   }
 
   const notes = data[activeCategory] ?? []
+  const activeCat = CATEGORIES.find((c) => c.id === activeCategory)
 
   return (
     <div className="min-h-screen bg-gray-50 pb-10">
@@ -74,15 +76,19 @@ export function NotesPage() {
 
       <div className="px-4 py-4">
         <div className="flex rounded-2xl bg-gray-100 p-1 mb-4">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className={`flex-1 py-2 rounded-xl text-xs font-medium transition-all ${activeCategory === cat.id ? 'bg-white shadow text-gray-900' : 'text-gray-500'}`}
-            >
-              {cat.label}
-            </button>
-          ))}
+          {CATEGORIES.map((cat) => {
+            const active = activeCategory === cat.id
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                style={active ? { boxShadow: `inset 0 -3px 0 ${cat.color}` } : undefined}
+                className={`flex-1 py-2 rounded-xl text-xs font-medium transition-all ${active ? 'bg-white text-gray-900' : 'text-gray-500'}`}
+              >
+                {cat.label}
+              </button>
+            )
+          })}
         </div>
 
         {loading ? (
@@ -100,7 +106,11 @@ export function NotesPage() {
             )}
 
             {notes.map((note) => (
-              <Card key={note.id} className="p-4 flex flex-col gap-3">
+              <Card
+                key={note.id}
+                style={{ borderLeft: `4px solid ${activeCat?.color ?? '#e5e7eb'}` }}
+                className="p-4 flex flex-col gap-3"
+              >
                 <Input
                   value={note.title}
                   maxLength={60}
@@ -116,7 +126,7 @@ export function NotesPage() {
                   onBlur={persist}
                   placeholder="Detalle"
                 />
-                <Button onClick={() => deleteNote(note.id)} variant="danger" className="self-end">
+                <Button onClick={() => deleteNote(note.id, note.title)} variant="danger" className="self-end">
                   <Trash2 size={14} /> Borrar
                 </Button>
               </Card>
