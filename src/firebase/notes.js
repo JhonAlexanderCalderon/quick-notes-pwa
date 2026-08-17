@@ -1,5 +1,6 @@
 import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore'
 import { db } from './config'
+import { CATEGORIES } from '../utils/categories'
 
 // Same document shape the watch's Side Service reads/writes
 // (quick-notes/utils/firestore-sync.js): a single doc at notes/data with
@@ -8,8 +9,13 @@ import { db } from './config'
 // already-working watch-side code doesn't need to change.
 const NOTES_DOC = doc(db, 'notes', 'data')
 
+// Derived from CATEGORIES instead of a hardcoded key list — the watch
+// project's utils/categories.js already does this; this file drifted from
+// that pattern, which is exactly how it missed a category before.
 export function emptyNotesData() {
-  return { personal: [], ti: [], reuniones: [] }
+  const data = {}
+  for (const c of CATEGORIES) data[c.id] = []
+  return data
 }
 
 export async function getNotesData() {
